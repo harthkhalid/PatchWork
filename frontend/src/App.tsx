@@ -26,6 +26,7 @@ export default function App() {
   const [stars, setStars] = useState<Stars | null>(null);
   const [fpGlobal, setFpGlobal] = useState<Record<string, number | boolean> | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [repoInput, setRepoInput] = useState("org/repo");
   const [prInput, setPrInput] = useState(1);
@@ -40,6 +41,7 @@ export default function App() {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
         const [r, p, st, fp] = await Promise.all([
           fetchJson<RepoStat[]>("/api/analytics/repos"),
@@ -53,6 +55,8 @@ export default function App() {
         setFpGlobal(fp);
       } catch (e) {
         setError(String(e));
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);
@@ -80,7 +84,8 @@ export default function App() {
   }
 
   return (
-    <div className="page">
+    <div className="page" aria-busy={loading}>
+      {loading && <div className="loading-bar" role="status" aria-live="polite" />}
       <header className="hero">
         <div>
           <p className="eyebrow">Patchwork</p>

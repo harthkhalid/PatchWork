@@ -86,6 +86,8 @@ async def analyze_diff(
     settings = settings or get_settings()
     version = prompt_version or settings.active_prompt_version
     bundle = load_prompt(version)
+    if not diff_text or not diff_text.strip():
+        return [], "{}", bundle
     user = render_user(
         bundle,
         repo_full_name=repo_full_name,

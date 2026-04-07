@@ -54,12 +54,18 @@ async def github_webhook(
         inst = (payload.get("installation") or {}).get("id")
         if not repo or not num or not inst:
             return {"status": "ignored", "reason": "missing fields"}
+        try:
+            pr_no = int(num)
+            inst_id = int(inst)
+        except (TypeError, ValueError):
+            log.warning("ignored webhook: non-numeric pr or installation id")
+            return {"status": "ignored", "reason": "invalid ids"}
         await enqueue(
             redis_client,
             {
-                "installation_id": int(inst),
+                "installation_id": inst_id,
                 "repo_full_name": str(repo),
-                "pr_number": int(num),
+                "pr_number": pr_no,
             },
         )
         log.info("queued pr %s#%s", repo, num)
@@ -81,12 +87,18 @@ async def github_webhook(
         inst = (payload.get("installation") or {}).get("id")
         if not repo or not num or not inst:
             return {"status": "ignored"}
+        try:
+            pr_no = int(num)
+            inst_id = int(inst)
+        except (TypeError, ValueError):
+            log.warning("ignored issue_comment webhook: invalid ids")
+            return {"status": "ignored", "reason": "invalid ids"}
         await enqueue(
             redis_client,
             {
-                "installation_id": int(inst),
+                "installation_id": inst_id,
                 "repo_full_name": str(repo),
-                "pr_number": int(num),
+                "pr_number": pr_no,
             },
         )
         log.info("queued from comment %s#%s", repo, num)

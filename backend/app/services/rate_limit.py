@@ -7,6 +7,10 @@ import redis.asyncio as redis
 
 
 async def allow(redis_client: redis.Redis, key: str, limit: int, window_sec: int = 60) -> bool:
+    if window_sec < 1:
+        window_sec = 60
+    if limit < 1:
+        limit = 1
     now = time.time()
     window_start = now - window_sec
     member = f"{now}:{uuid.uuid4().hex}"

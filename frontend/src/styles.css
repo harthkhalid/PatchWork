@@ -23,9 +23,30 @@ body {
 }
 
 .page {
+  position: relative;
   max-width: 1200px;
   margin: 0 auto;
   padding: 32px 20px 64px;
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  background: linear-gradient(90deg, var(--accent-2), var(--accent));
+  animation: loading-pulse 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes loading-pulse {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .hero {
