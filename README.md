@@ -4,7 +4,7 @@
 
 Patchwork is a full-stack, AI-assisted code review service for GitHub Pull Requests. A GitHub App receives webhooks, enqueues work on Redis, and a worker fetches the PR diff, runs an OpenAI prompt pipeline with **versioned templates**, posts **line-level review comments**, and exposes a **React dashboard** for PR health, **false-positive analytics**, and **developer feedback** that tightens prompts over time.
 
-## Stack
+## Stack test
 
 | Layer | Technology |
 | --- | --- |
