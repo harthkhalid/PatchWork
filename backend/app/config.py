@@ -17,11 +17,12 @@ class Settings(BaseSettings):
     github_private_key_path: str = ""
     github_client_id: str = ""
     github_client_secret: str = ""
-    github_app_slug: str = "patchwork-ai"
+    github_app_slug: str = "patchwork"
 
-    # OpenAI
+    # OpenAI (Chat Completions API; override base URL for compatible proxies)
     openai_api_key: str = ""
     openai_model: str = "gpt-4o"
+    openai_api_base_url: str = "https://api.openai.com/v1"
 
     # Redis
     redis_url: str = "redis://localhost:6379/0"

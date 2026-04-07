@@ -1,5 +1,7 @@
 # Patchwork
 
+**Made by Harth Khalid.**
+
 Patchwork is a full-stack, AI-assisted code review service for GitHub Pull Requests. A GitHub App receives webhooks, enqueues work on Redis, and a worker fetches the PR diff, runs an OpenAI prompt pipeline with **versioned templates**, posts **line-level review comments**, and exposes a **React dashboard** for PR health, **false-positive analytics**, and **developer feedback** that tightens prompts over time.
 
 ## Stack
@@ -130,6 +132,7 @@ See `.env.example`. Key variables:
 | --- | --- |
 | `OPENAI_API_KEY` | Required for analysis |
 | `OPENAI_MODEL` | Default `gpt-4o` |
+| `OPENAI_API_BASE_URL` | OpenAI-compatible API root (default `https://api.openai.com/v1`) |
 | `GITHUB_APP_ID` | GitHub App ID |
 | `GITHUB_WEBHOOK_SECRET` | Verifies `X-Hub-Signature-256` |
 | `GITHUB_PRIVATE_KEY` or `GITHUB_PRIVATE_KEY_PATH` | App private key (PEM) |

@@ -240,8 +240,7 @@ export default function App() {
       </section>
 
       <footer className="footer">
-        <span>Patchwork · OpenAI + FastAPI + Redis</span>
-        <span className="muted">Webhook: POST /webhooks/github · API: /api/*</span>
+        <span>Made by Harth Khalid</span>
       </footer>
     </div>
   );

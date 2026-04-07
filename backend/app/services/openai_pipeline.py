@@ -1,11 +1,11 @@
-"""OpenAI review pipeline with structured JSON output and confidence filtering."""
+"""OpenAI Chat Completions API (HTTP) for PR diff review — structured JSON findings + confidence filtering."""
 
 import json
 import re
 from dataclasses import dataclass
 from typing import Any
 
-from openai import AsyncOpenAI
+import httpx
 
 from app.config import Settings, get_settings
 from app.services.prompts import PromptBundle, load_prompt, render_user
@@ -86,23 +86,32 @@ async def analyze_diff(
     settings = settings or get_settings()
     version = prompt_version or settings.active_prompt_version
     bundle = load_prompt(version)
-    client = AsyncOpenAI(api_key=settings.openai_api_key or None)
     user = render_user(
         bundle,
         repo_full_name=repo_full_name,
         pr_number=pr_number,
         diff_text=_truncate_diff(diff_text),
     )
-    resp = await client.chat.completions.create(
-        model=settings.openai_model,
-        temperature=0.1,
-        messages=[
+    base = settings.openai_api_base_url.rstrip("/")
+    url = f"{base}/chat/completions"
+    payload: dict[str, Any] = {
+        "model": settings.openai_model,
+        "temperature": 0.1,
+        "messages": [
             {"role": "system", "content": bundle.system},
             {"role": "user", "content": user},
         ],
-        response_format={"type": "json_object"},
-    )
-    content = resp.choices[0].message.content or "{}"
+        "response_format": {"type": "json_object"},
+    }
+    headers = {
+        "Authorization": f"Bearer {settings.openai_api_key}",
+        "Content-Type": "application/json",
+    }
+    async with httpx.AsyncClient(timeout=120.0) as client:
+        r = await client.post(url, headers=headers, json=payload)
+        r.raise_for_status()
+        data = r.json()
+    content = (data.get("choices") or [{}])[0].get("message", {}).get("content") or "{}"
     rows = _parse_findings(content)
     findings = _filter_by_confidence(rows)
     return findings, content, bundle

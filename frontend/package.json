@@ -1,5 +1,6 @@
 {
   "name": "patchwork-dashboard",
+  "author": "Harth Khalid",
   "private": true,
   "version": "0.1.0",
   "type": "module",
